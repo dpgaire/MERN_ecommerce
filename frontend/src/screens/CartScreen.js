@@ -11,7 +11,7 @@ import {
   Image,
   ListGroup,
 } from "react-bootstrap";
-import { addToCart } from "../actions/cartActions";
+import { addToCart, removeFromCart } from "../actions/cartActions";
 const CartScreen = () => {
   let navigate = useNavigate();
 
@@ -22,18 +22,18 @@ const CartScreen = () => {
   const qty = searchParams.search
     ? Number(searchParams.search.split("=")[1])
     : 1;
-  const dispach = useDispatch();
+  const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
   const { cartItems } = cart;
 
   useEffect(() => {
     if (id) {
-      dispach(addToCart(id, qty));
+      dispatch(addToCart(id, qty));
     }
-  }, [dispach, id, qty]);
+  }, [dispatch, id, qty]);
 
   const removeFromCartHandler = (id) => {
-    console.log("Remove from cart", id);
+    dispatch(removeFromCart(id));
   };
   const checkOutHandler = () => {
     navigate("/login?redirect=shipping");
@@ -63,7 +63,9 @@ const CartScreen = () => {
                       as="select"
                       value={item.qty}
                       onChange={(e) =>
-                        dispach(addToCart(item.product, Number(e.target.value)))
+                        dispatch(
+                          addToCart(item.product, Number(e.target.value))
+                        )
                       }
                     >
                       {[...Array(item.countInStock).keys()].map((x) => (
