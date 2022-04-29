@@ -8,9 +8,11 @@ import Message from "../components/Message";
 import Loader from "../components/Loader";
 
 const RegisterScreen = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+  const [conformPassword, setConformPassword] = useState("");
+  const [message, setMessage] = useState(null);
 
   const searchParams = useLocation();
   let redirect = searchParams.search ? searchParams.search.split("=")[1] : "/";
@@ -31,12 +33,17 @@ const RegisterScreen = () => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    //dispatch login
-    dispatch(userRegister(email, password, name));
+    //dispatch register
+    if (password !== conformPassword) {
+      setMessage("Password do not match");
+    } else {
+      dispatch(userRegister(email, password, name));
+    }
   };
   return (
     <FormContainer>
-      <h1>Sign In</h1>
+      <h1>Sign Up</h1>
+      {message && <Message variant="danger">{message}</Message>}
       {error && <Message variant="danger">{error}</Message>}
       {loading && <Loader />}
       <Form onSubmit={submitHandler}>
@@ -67,13 +74,22 @@ const RegisterScreen = () => {
             onChange={(e) => setPassword(e.target.value)}
           ></Form.Control>
         </Form.Group>
+        <Form.Group controlId="password">
+          <Form.Label>Conform Password</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Conform password"
+            value={conformPassword}
+            onChange={(e) => setConformPassword(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
         <Button className="my-3" type="submit" variant="primary">
-          Sign In
+          Register
         </Button>
       </Form>
       <Row className="py-3">
         <Col>
-          Already signed?{" "}
+          Have an account?{" "}
           <Link to={redirect ? `/login?redirect=${redirect}` : "/login"}>
             Login
           </Link>

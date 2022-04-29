@@ -13,6 +13,9 @@ import {
 } from "react-bootstrap";
 import { addToCart, removeFromCart } from "../actions/cartActions";
 const CartScreen = () => {
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   let navigate = useNavigate();
 
   const { id } = useParams();
@@ -36,8 +39,13 @@ const CartScreen = () => {
     dispatch(removeFromCart(id));
   };
   const checkOutHandler = () => {
-    navigate("/login?redirect=shipping");
-  };
+    if (!userInfo) {
+      navigate("/login");
+    } else {
+      navigate("/shipping");
+    }
+    // navigate("/login?redirect=shipping");
+  };;
   return (
     <Row>
       <Col md={8}>
@@ -122,6 +130,6 @@ const CartScreen = () => {
       </Col>
     </Row>
   );
-};
+};;;;
 
 export default CartScreen;
